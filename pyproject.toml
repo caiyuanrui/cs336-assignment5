@@ -22,6 +22,7 @@ dependencies = [
     "xopen>=2.0.2",
     "datasets>=2.14.6",
     "aiofiles>=25.1.0",
+    "jaxtyping>=0.3.6",
 ]
 
 [tool.setuptools.packages.find]

@@ -1,4 +1,5 @@
 import torch
+from jaxtyping import Float
 from torch import Tensor
 from transformers import (
     PreTrainedTokenizerBase,  # pyright: ignore[reportPrivateImportUsage]
@@ -53,3 +54,19 @@ def tokenize_prompt_and_output(
     labels = pao_tensor[:][1:]
 
     return {"input_ids": input_ids, "labels": labels, "response_mask": response_mask}
+
+
+def compute_entropy(
+    logits: Float[Tensor, "batch_size seq_len vocab_size"],  # noqa: F722
+) -> Float[Tensor, "batch_size seq_len"]:  # noqa: F722
+    """
+    Computes the per-token entropy of next-token predictions.
+    Args:
+        logits: (batch_size, seq_len, vocab_size)
+    Returns:
+        (batch_size, seq_len)
+    """
+    logsumexp: Float[Tensor, "batch_size seq_len"] = torch.logsumexp(logits, dim=-1)  # noqa: F722
+    probs: Float[Tensor, "batch_size seq_len"] = torch.softmax(logits, -1)  # noqa: F722
+    out = logsumexp - torch.sum(logits * probs, dim=-1)
+    return out
