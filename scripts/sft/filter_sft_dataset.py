@@ -43,5 +43,5 @@ with open("data/a5-alignment/MATH-SFT.jsonl") as f:
                 {"prompt": prompt, "response": response, "solution": solution}
             )
 
-with open("data/a5-alignment/MATH-SFT-filtered.jsonl", "x") as f:
+with open("data/a5-alignment/MATH/sft.jsonl", "x") as f:
     f.writelines([json.dumps(line) + "\n" for line in positive_samples])
