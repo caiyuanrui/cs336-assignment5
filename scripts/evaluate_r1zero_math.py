@@ -1,16 +1,20 @@
+from pathlib import Path
+
+from datasets import load_dataset
 from vllm import LLM, SamplingParams
 
-from cs336_alignment.prompts import r1_zero_prompt
-from cs336_alignment.data import sample_MATH_as_valid
-from cs336_alignment.eval import evaluate_vllm
 from cs336_alignment.drgrpo_grader import r1_zero_reward_fn
+from cs336_alignment.eval import evaluate_vllm
+from cs336_alignment.prompts import r1_zero_prompt
+
+root_dir = Path(__file__).parent.parent
 
 model = LLM(model="Qwen/Qwen2.5-Math-1.5B")
 sampling_params = SamplingParams(
     max_tokens=1024, stop=["</answer>"], include_stop_str_in_output=True
 )
 
-dataset = sample_MATH_as_valid(size=1000)
+dataset = load_dataset(root_dir.joinpath("data/a5-alignment/MATH").as_posix())["test"]
 prompts: list[str] = []
 solutions: list[str] = []
 
