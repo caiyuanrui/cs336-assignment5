@@ -1,0 +1,37 @@
+model:
+  name: Qwen/Qwen3-0.6B-base
+  dtype: float16       # float16 | bfloat16 | float32
+  attn_implementation: flash_attention_2    # sdpa
+  device_map: auto
+
+lora:
+  r: 64
+  lora_alpha: 16
+  lora_dropout: 0.05
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
+  bias: none
+  task_type: CAUSAL_LM
+
+training:
+  batch_size: 1
+  grad_accum_steps: 16
+  num_epochs: 2
+  learning_rate: 1e-4
+  weight_decay: 0.01
+  max_grad_norm: 1.0
+  use_amp: false                 
+  amp_dtype: float16            
+
+data:
+  sft_jsonl: data/a5-alignment/MATH/sft.jsonl
+
+output:
+  root_dir: /home/brian/cs336-assignment5
+  model_dir: data/a5_alignment/models/sft

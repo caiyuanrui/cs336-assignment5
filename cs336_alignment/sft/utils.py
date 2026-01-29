@@ -40,7 +40,9 @@ def tokenize_prompt_and_output(
     max_len = max(len(prompt_ids[i]) + len(output_ids[i]) for i in range(batch_size))
 
     # prompt_and_output_tensor
-    pao_tensor = torch.empty(batch_size, max_len, dtype=torch.long)
+    pao_tensor = (
+        torch.ones(batch_size, max_len, dtype=torch.long) * tokenizer.pad_token_id
+    )
     response_mask = torch.zeros(batch_size, max_len - 1, dtype=torch.bool)
 
     for i in range(batch_size):
@@ -53,8 +55,8 @@ def tokenize_prompt_and_output(
         )
         response_mask[i][len(p) - 1 : len(concat) - 1] = True
 
-    input_ids = pao_tensor[:][:-1]
-    labels = pao_tensor[:][1:]
+    input_ids = pao_tensor[:, :-1]
+    labels = pao_tensor[:, 1:]
 
     return {"input_ids": input_ids, "labels": labels, "response_mask": response_mask}
 
@@ -82,7 +84,9 @@ def get_response_log_probs(
     labels: Tensor,
     return_token_entropy: bool = False,
 ) -> dict[str, Tensor]:
-    logits: Float[Tensor, "batch_size seq_len vocab_size"] = model(input_ids).logits  # type: ignore  # noqa: F722
+    logits: Float[Tensor, "batch_size seq_len vocab_size"] = model(  # noqa: F722
+        input_ids
+    ).logits.float()
     log_probs = torch.log_softmax(logits, dim=-1)
     per_token_log_prob = torch.gather(log_probs, -1, labels[..., None]).squeeze(-1)
 
