@@ -165,12 +165,6 @@ for epoch in range(num_epochs):
 
             optimizer.zero_grad()
 
-        alloc = torch.cuda.max_memory_allocated() / 1024**3
-        reserv = torch.cuda.max_memory_reserved() / 1024**3
-        print(
-            f"[mem] allocated={alloc:.2f} GB, reserved={reserv:.2f} GB, seq_len={batch['input_ids'].size(-1)}"
-        )
-
         if (i + 1) % 50 == 0:
             print(f"epoch {epoch} step {i + 1}  loss={running_loss / step:.4f}")
 
