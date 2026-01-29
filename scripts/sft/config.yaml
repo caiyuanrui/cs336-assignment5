@@ -26,12 +26,12 @@ training:
   learning_rate: 1e-4
   weight_decay: 0.01
   max_grad_norm: 1.0
-  use_amp: false                 
-  amp_dtype: float16            
+  use_amp: false
+  amp_dtype: float16
 
 data:
   sft_jsonl: data/a5-alignment/MATH/sft.jsonl
 
 output:
   root_dir: /home/brian/cs336-assignment5
-  model_dir: data/a5_alignment/models/sft
+  model_dir: data/a5-alignment/models/sft

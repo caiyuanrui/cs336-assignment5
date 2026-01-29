@@ -21,7 +21,7 @@ def generate_completion(model, tokenizer, prompt: str, max_new_tokens: int, eot:
     stop_ids = tokenizer.encode(eot, add_special_tokens=False)
     stopping_criteria = StoppingCriteriaList([StopOnSubsequence(stop_ids)])
 
-    inputs = tokenizer(prompt, return_tensors="pt")
+    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
     outputs = model.generate(
         **inputs,
         max_new_tokens=max_new_tokens,
